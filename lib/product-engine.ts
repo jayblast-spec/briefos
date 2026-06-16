@@ -1,69 +1,94 @@
 export type IntelligenceInput = { input?: string };
-
 const product = {
   "repo": "BriefOS",
   "suite": "AI Productivity Suite",
-  "category": "Executive briefing",
-  "audience": "founders, operators, consultants, and leadership teams",
-  "promise": "compress scattered context into a board-ready decision brief",
-  "inputLabel": "Messy context, notes, or meeting dump",
-  "placeholder": "Paste customer feedback, strategy notes, or project updates",
-  "primary": "Build brief",
-  "gradient": "from-blue-300 via-cyan-200 to-slate-200",
+  "domain": "Executive intelligence",
+  "accent": "from-blue-300 via-cyan-200 to-slate-100",
+  "hero": "Turn scattered context into the brief a serious decision deserves.",
+  "sub": "BriefOS is an executive briefing room for founders, operators, advisors, and teams that need evidence, risks, options, and next actions without drowning in notes.",
+  "input": "Paste customer feedback, investor notes, roadmap tension, or a messy project update",
+  "cta": "Build executive brief",
+  "score": "Brief readiness",
   "modules": [
-    "Context compression",
-    "Decision options",
-    "Risk and assumption map",
-    "Action owner table",
-    "Board memo export"
+    [
+      "Signal intake",
+      "Convert messy notes into decision-grade context."
+    ],
+    [
+      "Option framing",
+      "Lay out choices, tradeoffs, risks, and timing."
+    ],
+    [
+      "Action ledger",
+      "Assign owners, due dates, and unresolved questions."
+    ],
+    [
+      "Board-ready export",
+      "Prepare the summary a leader can actually act on."
+    ]
   ],
-  "outputs": [
-    "One-page brief",
-    "Options and tradeoffs",
-    "Recommended next action",
-    "Follow-up questions"
+  "rows": [
+    [
+      "Decision brief",
+      "Leadership",
+      "High",
+      "Summarize what matters, what changed, and what action is required."
+    ],
+    [
+      "Risk memo",
+      "Operations",
+      "Medium",
+      "Surface assumptions, dependencies, and what could fail."
+    ],
+    [
+      "Board update",
+      "Founder",
+      "High",
+      "Compress progress, blockers, asks, and metrics."
+    ],
+    [
+      "Client summary",
+      "Consulting",
+      "Medium",
+      "Make stakeholder context easier to review and approve."
+    ]
   ],
-  "next": [
-    "calendar/email ingestion",
-    "board-pack PDF export",
-    "decision-memory retrieval",
-    "CEO morning brief automation"
+  "missions": [
+    [
+      "Source-backed brief memory",
+      "Persist citations and source snippets for every generated brief."
+    ],
+    [
+      "Decision comparison mode",
+      "Compare two or more strategic options with tradeoffs."
+    ],
+    [
+      "Board-pack PDF export",
+      "Generate clean PDF output with assumptions, actions, and owners."
+    ],
+    [
+      "Calendar follow-up loop",
+      "Turn unresolved brief questions into scheduled follow-ups."
+    ]
   ]
 } as const;
-
-function score(text: string) {
-  const length = text.trim().length;
-  const diversity = new Set(text.toLowerCase().replace(/[^a-z0-9 ]/g, '').split(/\s+/).filter(Boolean)).size;
-  return Math.min(97, 48 + Math.floor(length / 7) + Math.min(28, diversity));
-}
-
+function scoreFor(subject: string) { let score = 57 + Math.min(30, Math.floor(subject.length / 6)); if (/risk|urgent|investor|client|payment|contract|meeting|decision|launch|proof|delay/i.test(subject)) score += 7; return Math.min(98, score); }
+function band(score: number) { return score >= 86 ? 'strong' : score >= 72 ? 'ready' : score >= 60 ? 'needs review' : 'starter'; }
 export function generateIntelligence({ input = '' }: IntelligenceInput) {
-  const subject = input.trim() || product.placeholder;
-  const confidence = score(subject);
-  const urgency = confidence > 82 ? 'high' : confidence > 66 ? 'medium' : 'starter';
+  const subject = input.trim() || product.input;
+  const score = scoreFor(subject);
   return {
     product: product.repo,
-    category: product.category,
+    brand: 'ArkNet Digital',
+    suite: product.suite,
+    domain: product.domain,
     subject,
-    confidence,
-    urgency,
-    executive_summary: product.promise,
-    immediate_outputs: product.outputs.map((output, index) => ({
-      title: output,
-      detail: output + ' for: ' + subject,
-      priority: index === 0 ? 'primary' : index === 1 ? 'supporting' : 'next'
-    })),
-    automation_plan: product.modules.map((module, index) => ({
-      stage: index + 1,
-      module,
-      value: 'Automate ' + module.toLowerCase() + ' so ' + product.audience + ' can move faster with less manual work.'
-    })),
-    future_addons: product.next.map((addon, index) => ({
-      name: addon,
-      horizon: index < 2 ? 'v2' : 'v3',
-      contributor_lane: index % 2 === 0 ? 'integration' : 'product intelligence'
-    })),
-    contributor_brief: 'Improve ' + product.repo + ' by making ' + product.category.toLowerCase() + ' easier for ' + product.audience + '.',
+    score,
+    status: band(score),
+    executive_summary: product.sub,
+    intelligence_map: product.modules.map(([label, value]) => ({ label, value, status: score >= 72 ? 'priority' : 'review' })),
+    action_queue: product.rows.slice(0, 3).map(([item, owner, priority, note]) => ({ action: item + ' - ' + owner, priority, impact: note })),
+    contributor_lanes: product.missions.map(([lane, mission]) => ({ lane, mission })),
     generated_at: new Date().toISOString()
   };
 }
