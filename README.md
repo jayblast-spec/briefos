@@ -1,37 +1,38 @@
 # BriefOS
 
-BriefOS is part of ArkNet Digital's AI Productivity Suite.
+BriefOS is an ArkNet Digital product in the AI Productivity Suite.
 
 ## Promise
 
-compress scattered context into a board-ready decision brief
+Turn scattered context into the brief a serious decision deserves.
 
-## Built For
+BriefOS is an executive briefing room for founders, operators, advisors, and teams that need evidence, risks, options, and next actions without drowning in notes.
 
-founders, operators, consultants, and leadership teams
+## Current v1
 
-## Product Modules
+- Bespoke product cockpit UI
+- Live product-specific intake
+- `POST /api/intelligence`
+- Product-specific scoring and action queue
+- Contributor mission lanes
+- Mobile-friendly layout
 
-- Context compression
-- Decision options
-- Risk and assumption map
-- Action owner table
-- Board memo export
+## Contributor Missions
 
-## Open Source Direction
-
-This repo is open to contributors because strong ideas move faster when serious builders can inspect, improve, and extend them. The goal is not secrecy. The goal is speed, quality, and contribution.
-
-## First Workflow
-
-1. Enter real context.
-2. Generate a useful first output.
-3. Review risk, confidence, or next action.
-4. Save the result into product memory in a future paid workspace.
+- Source-backed brief memory: Persist citations and source snippets for every generated brief.
+- Decision comparison mode: Compare two or more strategic options with tradeoffs.
+- Board-pack PDF export: Generate clean PDF output with assumptions, actions, and owners.
+- Calendar follow-up loop: Turn unresolved brief questions into scheduled follow-ups.
 
 ## Run Locally
 
 ```bash
 npm install
 npm run dev
+```
+
+## Build
+
+```bash
+npm run build
 ```
