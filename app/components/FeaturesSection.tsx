@@ -5,23 +5,38 @@ import { useRef } from "react";
 
 const FEATURES = [
   {
-    icon: "⚡",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M11 1.5 3 11h5.5L9 18.5 17 9h-5.5L11 1.5Z" />
+      </svg>
+    ),
     title: "Any source, instantly",
     desc: "Paste URLs, news articles, research papers, raw notes, meeting transcripts — BriefOS handles it all.",
   },
   {
-    icon: "◈",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="4" width="14" height="3.2" rx="1" />
+        <rect x="3" y="8.4" width="14" height="3.2" rx="1" />
+        <rect x="3" y="12.8" width="9" height="3.2" rx="1" />
+      </svg>
+    ),
     title: "Structured by default",
     desc: "Every brief follows the same format: summary, key points, risks, opportunities, and action items. No fluff.",
   },
   {
-    icon: "🧠",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="10" cy="10" r="7" />
+        <path d="M10 3v14M3 10h14M5.5 5.5l9 9M14.5 5.5l-9 9" />
+      </svg>
+    ),
     title: "AI that analysts trust",
     desc: "Powered by state-of-the-art language models. Trained on reasoning, not vibes.",
   },
 ];
 
-function FeatureCard({ icon, title, desc, i }: { icon: string; title: string; desc: string; i: number }) {
+function FeatureCard({ icon, title, desc, i }: { icon: React.ReactNode; title: string; desc: string; i: number }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
 
@@ -33,9 +48,7 @@ function FeatureCard({ icon, title, desc, i }: { icon: string; title: string; de
       transition={{ duration: 0.5, delay: i * 0.12 }}
       className="flex flex-col gap-3 rounded-2xl border border-border bg-surface p-6 hover:border-accent/40 transition-colors"
     >
-      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-soft text-xl">
-        {icon}
-      </span>
+      <span className="icon-3d text-white">{icon}</span>
       <h3 className="text-base font-semibold text-foreground">{title}</h3>
       <p className="text-sm text-muted leading-relaxed">{desc}</p>
     </motion.div>
