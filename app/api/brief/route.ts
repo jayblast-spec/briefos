@@ -1,3 +1,5 @@
+import { completeWithFallback } from "@/lib/ai-fallback";
+
 export const maxDuration = 30;
 
 const DEMO: BriefOutput = {
@@ -62,12 +64,6 @@ export async function POST(request: Request) {
     return Response.json({ error: "Invalid request body." }, { status: 400 });
   }
 
-  const apiKey = process.env.GROQ_API_KEY;
-  if (!apiKey) {
-    await new Promise((r) => setTimeout(r, 1800));
-    return Response.json({ demo: true, brief: DEMO });
-  }
-
   let text = content ?? "";
 
   if (!text && url) {
@@ -99,36 +95,22 @@ export async function POST(request: Request) {
   }
 
   try {
-    const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "llama-3.3-70b-versatile",
-        messages: [
-          { role: "system", content: SYSTEM },
-          { role: "user", content: `Source content:\n\n${text.slice(0, 6000)}` },
-        ],
-        temperature: 0.3,
-        max_tokens: 1200,
-      }),
+    const { content: raw } = await completeWithFallback(SYSTEM, `Source content:\n\n${text.slice(0, 6000)}`, {
+      temperature: 0.3,
+      maxTokens: 1200,
     });
-
-    if (!groqRes.ok) {
-      return Response.json({ error: "AI service unavailable. Try again shortly." }, { status: 502 });
-    }
-
-    const data = await groqRes.json();
-    const raw = data?.choices?.[0]?.message?.content ?? "";
-
     let brief: BriefOutput;
     try {
       brief = JSON.parse(raw) as BriefOutput;
     } catch {
-      return Response.json({ error: "AI returned an unexpected response. Try again." }, { status: 500 });
+      const jsonMatch = raw.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) throw new Error("no JSON in response");
+      brief = JSON.parse(jsonMatch[0]) as BriefOutput;
     }
-
     return Response.json({ demo: false, brief });
-  } catch {
-    return Response.json({ error: "Something went wrong. Try again shortly." }, { status: 502 });
+  } catch (err) {
+    console.error("completeWithFallback failed:", err instanceof Error ? err.message : err);
+    await new Promise((r) => setTimeout(r, 1500));
+    return Response.json({ demo: true, brief: DEMO });
   }
 }
