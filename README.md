@@ -33,9 +33,18 @@ BriefOS accepts a URL, a pasted article, or raw text (research notes, email thre
 ## How It Works
 
 - `app/page.tsx` renders the landing shell with `HeroSection`, `FeaturesSection`, and the `BriefForm` input component.
-- `app/api/brief/route.ts` accepts the submitted URL or text and calls the Groq Chat Completions API (`llama-3.3-70b-versatile`) to compile the structured brief.
-- `app/api/intelligence/route.ts` provides a supporting intelligence-formatting pass for the generated output.
+- `app/api/brief/route.ts` accepts the submitted URL or text and calls the Groq Chat Completions API against a typed `BriefOutput` schema, falling back to a fixed demo brief when no API key is set.
 - Styling is Tailwind CSS with Framer Motion handling interface transitions; the app is a single Next.js App Router deployment with no database layer.
+
+## Engineering Notes
+
+**The real problem:** a "summary" that's just shorter text still makes you do the work of figuring out what to actually do with it — the useful output isn't a shorter version of the input, it's a different shape entirely (key points, implications, action items).
+
+**The approach:** `brief/route.ts` prompts against a typed schema that separates summary, key points, implications, and action items into distinct fields, plus a source-credibility signal, rather than returning one undifferentiated block of prose.
+
+**One real number:** the demo fallback (no `GROQ_API_KEY`) is a fully worked brief, not a placeholder — real key points and action items, so the product is honestly demoable without a key.
+
+**Not handled yet:** `app/api/intelligence` is a separate, disconnected decorative endpoint — it is not part of the real brief-compilation pipeline.
 
 ## Live
 
