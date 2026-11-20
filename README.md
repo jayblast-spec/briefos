@@ -7,7 +7,6 @@
 BriefOS takes a URL, a pasted article, or raw text and turns it into a structured intelligence brief — Summary, Key Points, Implications, Action Items, and a Source Quality signal — in seconds, with no account required. It is built to support a decision, not just summarize a wall of text.
 
 <p>
-  <a href="https://briefos-silk.vercel.app"><img alt="Live Demo" src="https://img.shields.io/badge/Live-Demo-1D4ED8?style=for-the-badge&logo=vercel&logoColor=white"></a>
   <a href="https://github.com/jayblast-spec/briefos"><img alt="GitHub Repo" src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white"></a>
 </p>
 
@@ -48,7 +47,7 @@ BriefOS accepts a URL, a pasted article, or raw text (research notes, email thre
 
 ## Live
 
-[briefos-silk.vercel.app](https://briefos-silk.vercel.app)
+*(demo temporarily offline)*
 
 ## Tech Stack
 
